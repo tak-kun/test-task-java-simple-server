@@ -192,21 +192,28 @@ class JsonServer {
             final InputStream body = he.getRequestBody();
             Scanner reader = new Scanner(body).useDelimiter("\r\n");;
             final String line = reader.next();
-            JsonArray myJsonObjectsArray = JsonParser.parseString(line).getAsJsonArray();
-            Gson googleJson = new Gson();
-            ArrayList jsonObjList = googleJson.fromJson(myJsonObjectsArray, ArrayList.class); // СПИСОК Жсонов
+
+            // Parsing single json:
+            JsonObject myJsonObject = (JsonObject) JsonParser.parseString(line);
+            //JsonArray myJsonObjectsArray = JsonParser.parseString(line).getAsJsonArray();
+            String allowingLogin_string = myJsonObject.get("login").getAsString();
+//            Gson googleJson = new Gson();
+//            ArrayList jsonObjList = googleJson.fromJson(myJsonObjectsArray, ArrayList.class); // СПИСОК Жсонов
+
             switch (requestMethod) {
                 case METHOD_POST:
                     System.out.println("POST");
-                    String weGot = jsonObjList.toString();
+                    //String weGot = jsonObjList.toString();
+                    String weGot = allowingLogin_string;
                     String weHave = SAVER.stroke;
                     System.out.println("weGot: "+weGot);
                     System.out.println("weHave: "+weHave);
-                    if (weGot.equals(weHave)) {
-                        System.out.println("ОДИНАКОВЫЕ");
+                    //if (weGot.equals(weHave)) {
+                    if (weHave.contains(weGot)) {
+                        System.out.println("Allow");
                         he.sendResponseHeaders(STATUS_OK, NO_RESPONSE_LENGTH);
                     } else {
-                        System.out.println("РАЗНЫЕ");
+                        System.out.println("reject");
                         he.sendResponseHeaders(STATUS_LOGIN_NOT_ALLOWED, NO_RESPONSE_LENGTH);
                     }
                     break;
