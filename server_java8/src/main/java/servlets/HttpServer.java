@@ -13,50 +13,39 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 //import groovy.json.JsonSlurper;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class JsonServer {
     private static final String HOSTNAME = "localhost";
-    private static final int PORT = 8080;
+    private static final int PORT = 8091;
     private static final int BACKLOG = 1;
-
     private static final String HEADER_ALLOW = "Allow";
     private static final String HEADER_CONTENT_TYPE = "Content-Type";
-
     private static final Charset CHARSET = StandardCharsets.UTF_8;
-
     private static final int STATUS_OK = 200;
     private static final int STATUS_LOGIN_NOT_ALLOWED = 404;
     private static final int STATUS_METHOD_ERROR = 400;
-
     private static final int NO_RESPONSE_LENGTH = -1;
-
     private static final String METHOD_GET = "GET";
     private static final String METHOD_OPTIONS = "OPTIONS";
-
     private static final String METHOD_PUT = "PUT";
     private static final String METHOD_POST = "POST";
-
     private static final String DEFAULT_LINE = "\"{'hello world!'}\";";
-
     private static final String ALLOWED_METHODS = METHOD_GET + "," + METHOD_OPTIONS;
     private static Object InputStream;
 
-    // TEST //
     public static class SAVER {
         public static String stroke ="Null";
     }
-    // TEST //
 
     public static void main(final String... args) throws IOException {
         final HttpServer server = HttpServer.create(new InetSocketAddress(HOSTNAME, PORT), BACKLOG);
-
 
         final boolean[] isThisJSONError_test = {true};
         final boolean[] isAllLoginsisStringsError_test = {false};
         final boolean[] isAllLoginsNormalSizeError_test = {false};
         final boolean[] isArraysNormalSizeError_test = {false};
         final boolean[] isInArraysDublicateError_test = {false};
-
 
         server.createContext("/logins", he -> {
 
@@ -74,7 +63,7 @@ class JsonServer {
                 isArraysNormalSizeError_test[0] = false;
                 isInArraysDublicateError_test[0] = false;
 
-                // проверим глобальную строку для сохранения строк успешно полученных массивов:
+                // проверим глобальный объект для сохранения массивов:
                 System.out.println("SAVED STRING are: "+ SAVER.stroke);
 
 
