@@ -58,7 +58,7 @@ class JsonServer {
         final boolean[] isInArraysDublicateError_test = {false};
 
 
-        server.createContext("/func1", he -> {
+        server.createContext("/logins", he -> {
 
             try {
                 final Headers headers = he.getResponseHeaders();
