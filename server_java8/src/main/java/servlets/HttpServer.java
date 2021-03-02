@@ -51,6 +51,9 @@ class JsonServer {
 
             try {
                 final Headers headers = he.getResponseHeaders();
+                final URI URL = he.getRequestURI();
+                System.out.println("URL: "+ URL);
+
                 final String requestMethod = he.getRequestMethod().toUpperCase();
                 //System.out.print(requestMethod);
                 final InputStream body = he.getRequestBody();
@@ -68,7 +71,6 @@ class JsonServer {
 
 
                 // теперь распарсим строку с массивом json-ов в массив собственно json-ов
-
                 try {
                     JsonArray myJsonObjectsArray = JsonParser.parseString(line).getAsJsonArray();
                     isThisJSONError_test[0] = false;
@@ -78,9 +80,7 @@ class JsonServer {
 
                 JsonArray myJsonObjectsArray = JsonParser.parseString(line).getAsJsonArray();
                 System.out.println(myJsonObjectsArray.getClass());
-
-//                isThisJSONError_test[0] = false;
-
+                
                 // ПРОВЕРЯЕМ КОЛ-ВО ЭЛЕМЕНТОВ
                 if (myJsonObjectsArray.size() > 1000) {
                     isArraysNormalSizeError_test[0] = true;
@@ -182,6 +182,43 @@ class JsonServer {
                 he.close();
             } // try-catch-finally
         }); // server.createContext
+        server.createContext("/allow", he -> { try {
+            final Headers headers = he.getResponseHeaders();
+            final URI URL = he.getRequestURI();
+            System.out.println("URL: "+ URL);
+
+            final String requestMethod = he.getRequestMethod().toUpperCase();
+            //System.out.print(requestMethod);
+            final InputStream body = he.getRequestBody();
+            Scanner reader = new Scanner(body).useDelimiter("\r\n");;
+            final String line = reader.next();
+            JsonArray myJsonObjectsArray = JsonParser.parseString(line).getAsJsonArray();
+            Gson googleJson = new Gson();
+            ArrayList jsonObjList = googleJson.fromJson(myJsonObjectsArray, ArrayList.class); // СПИСОК Жсонов
+            switch (requestMethod) {
+                case METHOD_POST:
+                    System.out.println("POST");
+                    String weGot = jsonObjList.toString();
+                    String weHave = SAVER.stroke;
+                    System.out.println("weGot: "+weGot);
+                    System.out.println("weHave: "+weHave);
+                    if (weGot.equals(weHave)) {
+                        System.out.println("ОДИНАКОВЫЕ");
+                        he.sendResponseHeaders(STATUS_OK, NO_RESPONSE_LENGTH);
+                    } else {
+                        System.out.println("РАЗНЫЕ");
+                        he.sendResponseHeaders(STATUS_LOGIN_NOT_ALLOWED, NO_RESPONSE_LENGTH);
+                    }
+                    break;
+                default:
+                    break;
+            } // switch
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            he.close();
+        } // try-catch-finally
+        });
         server.start();
     }
 
