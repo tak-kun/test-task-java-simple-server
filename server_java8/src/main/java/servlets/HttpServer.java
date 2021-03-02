@@ -75,7 +75,7 @@ class JsonServer {
                 isArraysNormalSizeError_test[0] = false;
                 isInArraysDublicateError_test[0] = false;
 
-                // проверим глобальный объект для сохранения массивов:
+                // проверим глобальную строку для сохранения строк успешно полученных массивов:
                 System.out.println("SAVED STRING are: "+ SAVER.stroke);
 
 
