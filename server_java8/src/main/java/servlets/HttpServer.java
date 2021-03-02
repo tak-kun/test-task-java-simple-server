@@ -13,7 +13,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 //import groovy.json.JsonSlurper;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 class JsonServer {
     private static final String HOSTNAME = "localhost";
